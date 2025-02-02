@@ -17,19 +17,28 @@ import { toast } from "sonner";
 
 const Verify = () => {
   const user = useAppSelector((state) => state.auth.user);
-
+ 
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const router = useRouter();
 
   const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
-
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
     // Redirect if user is verified
     if (user?.isVerified) router.replace("/"); // Redirect to home if already verified
+  }, [user, router]);
+
+  useEffect(() => {
+    // Redirect if user is verified
+    if (user && !user.isVerified) {
+      toast.info("OTP sent otp to " + user.email);
+      router.push("/auth/verify");
+    } else {
+      router.push("/auth/login"); // Redirect to home if not found
+    }
   }, [user, router]);
 
   const handleChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {

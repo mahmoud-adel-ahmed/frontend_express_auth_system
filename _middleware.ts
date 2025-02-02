@@ -2,12 +2,9 @@ import { NextResponse, NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-
-  if (
-    pathname.startsWith("/auth/verify")
-  ) {
+  if (pathname.startsWith("/auth/verify")) {
     const token = req.cookies.get("token");
-    // console.log("🚀 ~ middleware ~ token:", token)
+    // console.log("🚀 ~ middleware ~ token:", token);
     if (!token) {
       return NextResponse.redirect(new URL("/auth/signup", req.url));
     }
