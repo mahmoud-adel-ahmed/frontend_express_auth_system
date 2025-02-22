@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
-import { useAppDispatch, useAppSelector } from "./store/store";
+import { persistor, useAppDispatch, useAppSelector } from "./store/store";
 import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 import {
   DropdownMenu,
@@ -20,12 +20,11 @@ const HomePage = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  console.log("🚀 ~ HomePage ~ user:", user);
-
   const Logout = async () => {
     await Request.post("/users/logout");
     dispatch(setUser(null));
     toast.success("Logged out successfully");
+    persistor.purge();
     router.push("/auth/login");
   };
   return (
