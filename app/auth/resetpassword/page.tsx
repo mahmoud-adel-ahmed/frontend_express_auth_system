@@ -7,13 +7,12 @@ import { AxiosError } from "axios";
 import { Loader } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const ResetPassword = () => {
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
-  console.log("🚀 ~ ResetPassword ~ searchParams:", email);
   const [loading, setLoading] = useState(false);
   const [otp, setOTP] = useState("");
   const [password, setPassword] = useState("");
@@ -22,7 +21,8 @@ const ResetPassword = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const onSubmit = async () => {
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
     if (!email || !otp || !password || !confirmPassword) return;
     setLoading(true);
     try {
@@ -53,41 +53,51 @@ const ResetPassword = () => {
     if (user?.isVerified) router.replace("/"); // Redirect to home if already verified
   }, [user, router]);
 
+  useEffect(() => {
+    if (!email) {
+      router.push("/auth/forgetpassword");
+    }
+  }, [user, router]);
+
   return (
     <div className="h-screen w-full justify-center items-center flex flex-col">
-      <input
-        type="number"
-        placeholder="Enter your OTP"
-        value={otp}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => setOTP(e.target.value)}
-        className="w-[90%] sm:w-[70%] lg:w-[35%] xl:w-[40%] block mb-4 mx-auto bg-gray-300 px-4 py-4 rounded-lg outline-none no-arrows"
-      />
-      <input
-        type="password"
-        placeholder="Enter password"
-        value={password}
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setPassword(e.target.value)
-        }
-        className="w-[90%] sm:w-[70%] lg:w-[35%] xl:w-[40%] block mb-4 mx-auto bg-gray-300 px-4 py-4 rounded-lg outline-none no-arrows"
-      />
-      <input
-        type="password"
-        placeholder="Confirm password"
-        value={confirmPassword}
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setConfirmPassword(e.target.value)
-        }
-        className="w-[90%] sm:w-[70%] lg:w-[35%] xl:w-[40%] block mb-4 mx-auto bg-gray-300 px-4 py-4 rounded-lg outline-none no-arrows"
-      />
-      <div className="flex gap-4 items-center mt-6">
-        <Button className="bg-red-500">
-          <Link href={"/auth/forgetpassword"}>Go Back</Link>
-        </Button>
-        <Button onClick={onSubmit}>
-          {loading ? <Loader className="animate-spin" /> : "Change Password"}
-        </Button>
-      </div>
+      <form onSubmit={onSubmit} className="flex flex-col items-center w-full">
+        <input
+          type="number"
+          placeholder="Enter your OTP"
+          value={otp}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setOTP(e.target.value)
+          }
+          className="w-[90%] sm:w-[70%] lg:w-[35%] xl:w-[40%] block mb-4 mx-auto bg-gray-300 px-4 py-4 rounded-lg outline-none no-arrows"
+        />
+        <input
+          type="password"
+          placeholder="Enter password"
+          value={password}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setPassword(e.target.value)
+          }
+          className="w-[90%] sm:w-[70%] lg:w-[35%] xl:w-[40%] block mb-4 mx-auto bg-gray-300 px-4 py-4 rounded-lg outline-none no-arrows"
+        />
+        <input
+          type="password"
+          placeholder="Confirm password"
+          value={confirmPassword}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setConfirmPassword(e.target.value)
+          }
+          className="w-[90%] sm:w-[70%] lg:w-[35%] xl:w-[40%] block mb-4 mx-auto bg-gray-300 px-4 py-4 rounded-lg outline-none no-arrows"
+        />
+        <div className="flex gap-4 items-center mt-6">
+          <Button className="bg-red-500">
+            <Link href={"/auth/forgetpassword"}>Go Back</Link>
+          </Button>
+          <Button type="submit">
+            {loading ? <Loader className="animate-spin" /> : "Change Password"}
+          </Button>
+        </div>
+      </form>
     </div>
   );
 };

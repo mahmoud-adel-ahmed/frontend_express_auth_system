@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Request } from "@/app/helpers/request";
 import { AxiosError } from "axios";
 import { Loader } from "lucide-react";
-import { ChangeEvent, FormEvent, useState } from "react";
-import { useAppDispatch } from "@/app/store/store";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import { setUser } from "@/app/store/features/authSlice";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -19,6 +19,13 @@ const Login = () => {
 
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const user = useAppSelector((state) => state.auth.user);
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -84,7 +91,6 @@ const Login = () => {
             />
           </div>
           <p className="text-right my-2 text-sm sm:text-base font-semibold block">
-            
             <Link href={"/auth/forgetpassword"}>
               <span className="text-red-500 cursor-pointer capitalize">
                 forget password

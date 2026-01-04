@@ -1,16 +1,24 @@
 "use client";
 import { Request } from "@/app/helpers/request";
+import { useAppSelector } from "@/app/store/store";
 import { Button } from "@/components/ui/button";
 import { AxiosError } from "axios";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const user = useAppSelector((state) => state.auth.user);
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();

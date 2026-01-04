@@ -4,8 +4,8 @@ import { Request } from "@/app/helpers/request";
 import { AxiosError } from "axios";
 import { Loader } from "lucide-react";
 import Link from "next/link";
-import { ChangeEvent, FormEvent, useState } from "react";
-import { useAppDispatch } from "@/app/store/store";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import { setUser } from "@/app/store/features/authSlice";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -21,6 +21,13 @@ const Signup = () => {
 
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const user = useAppSelector((state) => state.auth.user);
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
