@@ -13,12 +13,16 @@ import {
 import { Request } from "./helpers/request";
 import { setUser } from "./store/features/authSlice";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 const HomePage = () => {
   const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+  if (!user) {
+    return redirect("/auth/login");
+  }
 
   const Logout = async () => {
     await Request.post("/users/logout");
