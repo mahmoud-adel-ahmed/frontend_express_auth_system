@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { persistor, useAppDispatch, useAppSelector } from "./store/store";
 import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 import {
@@ -20,9 +20,11 @@ const HomePage = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  if (!user) {
-    return redirect("/auth/login");
-  }
+  useEffect(() => {
+    if (!user) {
+      router.push("/auth/login");
+    }
+  }, [user, router]);
 
   const Logout = async () => {
     await Request.post("/users/logout");

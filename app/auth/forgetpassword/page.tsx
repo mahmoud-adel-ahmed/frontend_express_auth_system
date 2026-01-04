@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { AxiosError } from "axios";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { ChangeEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { toast } from "sonner";
 
 const ForgetPassword = () => {
@@ -12,7 +12,8 @@ const ForgetPassword = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const onSubmit = async () => {
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
     setLoading(true);
     try {
       await Request.post("/users/forget-password", { email });
@@ -33,18 +34,20 @@ const ForgetPassword = () => {
       <h2 className="text-xl text-gray-900 mb-4 font-medium">
         Enter the email to reset your password
       </h2>
-      <input
-        type="email"
-        value={email}
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setEmail(e.target.value)
-        }
-        placeholder="Enter your Email"
-        className="w-[90%] sm:w-[70%] md:w-[40%] block mb-4 mx-auto bg-gray-300 px-4 py-4 rounded-lg outline-none"
-      />
-      <Button onClick={onSubmit}>
-        {loading ? <Loader className="animate-spin" /> : "Submit"}
-      </Button>
+      <form onSubmit={onSubmit} className="flex flex-col items-center w-full">
+        <input
+          type="email"
+          value={email}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setEmail(e.target.value)
+          }
+          placeholder="Enter your Email"
+          className="w-[90%] sm:w-[70%] md:w-[40%] block mb-4 mx-auto bg-gray-300 px-4 py-4 rounded-lg outline-none"
+        />
+        <Button type="submit">
+          {loading ? <Loader className="animate-spin" /> : "Submit"}
+        </Button>
+      </form>
     </div>
   );
 };
